@@ -20,22 +20,22 @@ with open("cookies.txt") as f:
         driver.add_cookie({"name": cookie[0], "value": cookie[1]})
 driver.get("https://www.facebook.com/pokes")
 
+refresh_count = 0
 try:
     while True:
+        if refresh_count == 10:
+            driver.refresh()
+            refresh_count = 0
+
         spans = driver.find_elements(By.TAG_NAME, "span")
-        for span in spans:
-            try:
-                if span.get_attribute("innerHTML") == "好":
-                    span.click()
-                    break
-            except StaleElementReferenceException:
-                pass
-        
+
         for span in spans:
             try:
                 if span.get_attribute("innerHTML") == "戳回去":
                     span.click()
-                    message_span = span.find_element(By.XPATH, f"{'../' * 9}div[1]//a/..")
+                    message_span = span.find_element(
+                        By.XPATH, f"{'../' * 9}div[1]//a/.."
+                    )
                     log(message_span.text, "access.log")
             except StaleElementReferenceException:
                 pass
@@ -45,6 +45,7 @@ try:
                 log(f"{type(e)}\n{e}", "error.log", now)
 
         spans.clear()
+        refresh_count += 1
         sleep(20)
 
 except KeyboardInterrupt:
