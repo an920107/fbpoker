@@ -23,7 +23,7 @@ driver.get("https://www.facebook.com/pokes")
 refresh_count = 0
 try:
     while True:
-        if refresh_count == 10:
+        if refresh_count == 20:
             driver.refresh()
             refresh_count = 0
 
